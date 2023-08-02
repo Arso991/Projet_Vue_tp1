@@ -1,8 +1,32 @@
-<script setup lang="ts">
+<template>
+    <div class="container">
+        <div class="todo_content">
+            <div class="todo__content__title">
+                <h1>TO-DO-LIST</h1>
+            </div>
+            <form @submit.prevent="addTodo">
+                <input v-model="newTodo">
+                <btn/>
+            </form>
 
+            <div class="todo__content__task">
+                <task @bonjour="deleteTask" v-for="element in todoTab" :element="element"></task>
+            </div>
+        </div>
+        <!-- <button @click="count++">
+            Le nombre de clique est : {{ count }}
+        </button> -->
+    </div>
+</template>
+
+<script setup lang="ts">
+import task from '@/components/task.vue'
+import btn from '@/components/btn.vue'
 import { ref } from 'vue';
+const count = ref()
 
 const newTodo = ref('');
+
 
 /* interface Tab {
     name : String,
@@ -12,69 +36,73 @@ const newTodo = ref('');
 const todoTab /* : Tab[] */ = ref([
     {
         name: 'Boire',
-        is_finished: true
+        is_finished: true,
+        is_important:false
     },
     {
         name: 'Voler',
-        is_finished: false
+        is_finished: false,
+        is_important:true
     },
     {
         name: 'Lessive',
-        is_finished: true
+        is_finished: true,
+        is_important:false
     },
     {
         name: 'Manger',
-        is_finished: false
+        is_finished: false,
+        is_important:true
     },
     {
         name: 'Dormir',
-        is_finished: true
+        is_finished: true,
+        is_important:false
     },
-    
+
 ])
-function addTodo (){
-    todoTab.value.push({name: newTodo.value, is_finished:false})
-    newTodo.value =''
+
+function deleteTask (element){
+   const index = todoTab.value.findIndex((item)=>{
+    return item.name == element.name
+   })
+   console.log(index);
+   if(index > -1){
+    todoTab.value.splice(index,1)
+   }
+   
+}
+
+function addTodo() {
+    todoTab.value.push({ name: newTodo.value, is_finished: false, is_important:false })
+    newTodo.value = ''
 }
 </script>
 
-<template>
-    <!-- <button @click="count++">
-       Le nombre de clique est : {{ count }}
-    </button> -->
-    <div class="container">
-        <div class="todo_content">
-            <div class="todo__content__title">
-                <h1>TO-DO-LIST</h1>
-            </div>
-            <form @submit.prevent="addTodo">
-                <input v-model="newTodo">
-                <button>Ajouter</button>
-            </form>
-            
-            <div class="todo__content__task">
-                <div v-for="element in todoTab" class="todo__content__task__item">
-                    <div v-if="element.is_finished" class="line">
-                        <label for="" :class="element.is_finished ? 'active' : ''">{{ element.name }}</label>
-                        <input type="checkbox" name="task" id="task" v-bind:checked="element.is_finished">
-                    </div>
-                    <div v-else>
-                        <label for="" :class="element.is_finished ? 'active' : ''">{{ element.name }}</label>
-                        <input type="checkbox" name="task" id="task" v-bind:checked="element.is_finished">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
 
 <style scoped>
-button{
-    margin-top: 1rem;
+form button {
+    padding: .5rem;
+    background-color: green;
+    border: none;
+    border-radius: 5px;
+    display: block;
+    color: white;
+    font-weight: 600;
 }
-.container{
+
+form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.container {
     padding: 0 5rem;
+    display: flex;
+    justify-content: center;
 }
+
 input {
     outline: none;
 }
@@ -95,7 +123,7 @@ input {
 }
 
 .todo__content__title h1 {
-    font-size: 4rem;
+    font-size: 2.5rem;
     color: green;
 
 }
@@ -105,7 +133,7 @@ input {
     justify-content: center;
     flex-direction: column;
     width: 100%;
-    padding: .5rem;
+    padding: 0 .5rem;
 }
 
 .todo__content__task__item {
@@ -114,14 +142,6 @@ input {
 }
 
 .todo__content__task__item {
-    font-size: 2rem;
-}
-
-.active {
-    color: green;
-}
-
-.line {
-    text-decoration: line-through;
+    font-size: 1.5rem;
 }
 </style>
